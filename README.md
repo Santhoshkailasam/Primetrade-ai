@@ -1,16 +1,51 @@
-# React + Vite
+# 🚀 PrimeTrade.ai – Task Management Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PrimeTrade.ai is a **full-stack task management application** built using the **MERN stack**.  
+It supports **user authentication (JWT)** and **full CRUD operations** for tasks with a modern UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 Live Demo
 
-## React Compiler
+- **Frontend (Netlify)**: https://primetrade-ai.netlify.app  
+- **Backend (Render)**: https://primetrade-ai-mrpy.onrender.com
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+- React (Vite)
+- Tailwind CSS
+- Axios
+- React Router DOM
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Atlas)
+- Mongoose
+- JWT Authentication
+
+### Hosting
+- Frontend: Netlify
+- Backend: Render
+- Database: MongoDB Atlas
+
+---
+
+## ✨ Features
+
+- 🔐 User Authentication (Register & Login)
+- 🧾 JWT-based authorization
+- 📝 Create, Read, Update & Delete Tasks
+- ✅ Mark tasks as completed
+- 🔍 Search active tasks
+- 🔒 Protected dashboard route
+- 📱 Responsive UI
+- ☁️ Fully deployed (Frontend + Backend)
+
+---
+
+## 📁 Project Structure
+
