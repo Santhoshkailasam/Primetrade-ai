@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 
@@ -7,45 +8,84 @@ export default function Dashboard() {
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
+  // 🔐 Protect dashboard (redirect if not logged in)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  // 📥 Fetch tasks
   const fetchTasks = async () => {
-    const res = await API.get("/tasks");
-    setTasks(res.data);
+    try {
+      const res = await API.get("/api/tasks");
+      setTasks(res.data);
+    } catch (err) {
+      console.error("Failed to fetch tasks", err);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // ➕ Add / Update task
   const addOrUpdateTask = async () => {
     if (!title.trim()) return;
 
-    if (editingId) {
-      await API.put(`/tasks/${editingId}`, { title });
-      setEditingId(null);
-    } else {
-      await API.post("/tasks", { title });
+    try {
+      if (editingId) {
+        await API.put(`/api/tasks/${editingId}`, { title });
+        setEditingId(null);
+      } else {
+        await API.post("/api/tasks", { title });
+      }
+
+      setTitle("");
+      fetchTasks();
+    } catch (err) {
+      console.error("Task save failed", err);
     }
-
-    setTitle("");
-    fetchTasks();
   };
 
+  // ✅ Mark completed
   const markCompleted = async (id) => {
-    await API.patch(`/tasks/${id}`);
-    fetchTasks();
+    try {
+      await API.patch(`/api/tasks/${id}`);
+      fetchTasks();
+    } catch (err) {
+      console.error("Mark completed failed", err);
+    }
   };
 
+  // 🗑️ Delete task
   const deleteTask = async (id) => {
-    await API.delete(`/tasks/${id}`);
-    fetchTasks();
+    try {
+      await API.delete(`/api/tasks/${id}`);
+      fetchTasks();
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
   };
 
+  // ✏️ Edit
   const startEdit = (task) => {
     setTitle(task.title);
     setEditingId(task._id);
   };
 
+  // 🔍 Filters
   const activeTasks = tasks.filter(
     (t) =>
       !t.completed &&
@@ -54,12 +94,19 @@ export default function Dashboard() {
 
   const completedTasks = tasks.filter((t) => t.completed);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading dashboard...
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-
         {/* HEADER */}
         <div>
           <h2 className="text-3xl sm:text-4xl font-bold">Dashboard</h2>
@@ -113,32 +160,29 @@ export default function Dashboard() {
                   key={task._id}
                   className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col"
                 >
-                  {/* TOP ACTION BAR */}
                   <div className="flex justify-between mb-3">
                     <button
                       onClick={() => startEdit(task)}
-                      className="px-3 py-1 text-sm rounded-md bg-blue-600 hover:bg-blue-500 transition"
+                      className="px-3 py-1 text-sm rounded-md bg-blue-600 hover:bg-blue-500"
                     >
                       Update
                     </button>
 
                     <button
                       onClick={() => deleteTask(task._id)}
-                      className="px-3 py-1 text-sm rounded-md bg-red-600 hover:bg-red-500 transition"
+                      className="px-3 py-1 text-sm rounded-md bg-red-600 hover:bg-red-500"
                     >
                       Delete
                     </button>
                   </div>
 
-                  {/* TITLE */}
-                  <p className="font-medium text-white mb-6 break-words">
+                  <p className="font-medium mb-6 break-words">
                     {task.title}
                   </p>
 
-                  {/* BOTTOM GREEN BUTTON */}
                   <button
                     onClick={() => markCompleted(task._id)}
-                    className="mt-auto w-full px-4 py-2 bg-green-600 hover:bg-green-500 rounded-md text-sm transition"
+                    className="mt-auto bg-green-600 hover:bg-green-500 py-2 rounded-md"
                   >
                     Mark as Completed
                   </button>
@@ -171,7 +215,7 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => deleteTask(task._id)}
-                    className="px-3 py-1 text-sm rounded-md bg-red-600 hover:bg-red-500 transition"
+                    className="px-3 py-1 text-sm rounded-md bg-red-600 hover:bg-red-500"
                   >
                     Delete
                   </button>
