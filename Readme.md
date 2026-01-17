@@ -7,8 +7,7 @@ It supports **user authentication (JWT)** and **full CRUD operations** for tasks
 
 ## 🌐 Live Demo
 
-- **Frontend (Netlify)**: https://primetrade-ai.netlify.app  
-- **Backend (Render)**: https://primetrade-ai-mrpy.onrender.com
+- **Frontend (Netlify)**: https://sktodotech.netlify.app  
 
 ---
 
